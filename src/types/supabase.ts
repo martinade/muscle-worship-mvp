@@ -755,6 +755,8 @@ export type Database = {
           date_of_birth: string
           email: string
           password_hash: string
+          password_reset_expires: string | null
+          password_reset_token: string | null
           role: string
           timezone: string | null
           updated_at: string | null
@@ -769,6 +771,8 @@ export type Database = {
           date_of_birth: string
           email: string
           password_hash: string
+          password_reset_expires?: string | null
+          password_reset_token?: string | null
           role: string
           timezone?: string | null
           updated_at?: string | null
@@ -783,6 +787,8 @@ export type Database = {
           date_of_birth?: string
           email?: string
           password_hash?: string
+          password_reset_expires?: string | null
+          password_reset_token?: string | null
           role?: string
           timezone?: string | null
           updated_at?: string | null
