@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { createClient } from '@supabase/supabase-js';
 import { hashPassword } from '@/lib/auth/passwordUtils';
+import { createWallet } from '@/lib/wallet/walletUtils';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -157,21 +158,16 @@ export default async function handler(
 
     const userId = newUser.user_id;
 
-    // Create Wallet for user
-    const { error: walletError } = await supabase
-      .from('wallets')
-      .insert({
-        user_id: userId,
-        balance_wc: 0,
-      });
-
-    if (walletError) {
-      console.error('Wallet creation error:', walletError);
+    // Create Wallet for user using utility function
+    try {
+      await createWallet(userId);
+    } catch (error) {
+      console.error('Wallet creation failed:', error);
       // Rollback: Delete user if wallet creation fails
       await supabase.from('users').delete().eq('user_id', userId);
       return res.status(500).json({ 
         error: 'Failed to create wallet',
-        details: walletError.message
+        details: error instanceof Error ? error.message : 'Unknown error'
       });
     }
 

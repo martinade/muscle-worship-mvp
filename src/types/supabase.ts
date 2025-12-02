@@ -14,6 +14,44 @@ export type Database = {
   }
   public: {
     Tables: {
+      alerts: {
+        Row: {
+          alert_id: string
+          alert_type: string
+          created_at: string | null
+          message: string
+          read_at: string | null
+          status: string | null
+          user_id: string
+        }
+        Insert: {
+          alert_id?: string
+          alert_type: string
+          created_at?: string | null
+          message: string
+          read_at?: string | null
+          status?: string | null
+          user_id: string
+        }
+        Update: {
+          alert_id?: string
+          alert_type?: string
+          created_at?: string | null
+          message?: string
+          read_at?: string | null
+          status?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "alerts_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
       availabilityslots: {
         Row: {
           created_at: string | null
@@ -580,6 +618,47 @@ export type Database = {
           },
         ]
       }
+      escrowtransactions: {
+        Row: {
+          amount_wc: number
+          booking_id: string
+          created_at: string | null
+          escrow_id: string
+          locked_at: string | null
+          released_at: string | null
+          status: string
+          user_id: string
+        }
+        Insert: {
+          amount_wc: number
+          booking_id: string
+          created_at?: string | null
+          escrow_id?: string
+          locked_at?: string | null
+          released_at?: string | null
+          status?: string
+          user_id: string
+        }
+        Update: {
+          amount_wc?: number
+          booking_id?: string
+          created_at?: string | null
+          escrow_id?: string
+          locked_at?: string | null
+          released_at?: string | null
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "escrowtransactions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
       fanprofiles: {
         Row: {
           created_at: string | null
@@ -804,6 +883,7 @@ export type Database = {
           auto_topup_threshold_wc: number | null
           balance_wc: number
           created_at: string | null
+          escrow_balance_wc: number
           updated_at: string | null
           user_id: string
           wallet_id: string
@@ -814,6 +894,7 @@ export type Database = {
           auto_topup_threshold_wc?: number | null
           balance_wc?: number
           created_at?: string | null
+          escrow_balance_wc?: number
           updated_at?: string | null
           user_id: string
           wallet_id?: string
@@ -824,6 +905,7 @@ export type Database = {
           auto_topup_threshold_wc?: number | null
           balance_wc?: number
           created_at?: string | null
+          escrow_balance_wc?: number
           updated_at?: string | null
           user_id?: string
           wallet_id?: string
@@ -906,7 +988,25 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      process_escrow_lock: {
+        Args: { p_amount_wc: number; p_booking_id: string; p_user_id: string }
+        Returns: Json
+      }
+      process_escrow_release: {
+        Args: { p_amount_wc: number; p_booking_id: string; p_user_id: string }
+        Returns: Json
+      }
+      process_wallet_transaction: {
+        Args: {
+          p_amount_wc: number
+          p_description?: string
+          p_related_entity_id?: string
+          p_related_entity_type?: string
+          p_transaction_type: string
+          p_user_id: string
+        }
+        Returns: Json
+      }
     }
     Enums: {
       [_ in never]: never
