@@ -825,6 +825,50 @@ export type Database = {
           },
         ]
       }
+      payment_methods: {
+        Row: {
+          card_brand: string | null
+          card_exp_month: number | null
+          card_exp_year: number | null
+          card_last_four: string | null
+          created_at: string | null
+          is_default: boolean | null
+          payment_method_id: string
+          stripe_payment_method_id: string
+          user_id: string
+        }
+        Insert: {
+          card_brand?: string | null
+          card_exp_month?: number | null
+          card_exp_year?: number | null
+          card_last_four?: string | null
+          created_at?: string | null
+          is_default?: boolean | null
+          payment_method_id?: string
+          stripe_payment_method_id: string
+          user_id: string
+        }
+        Update: {
+          card_brand?: string | null
+          card_exp_month?: number | null
+          card_exp_year?: number | null
+          card_last_four?: string | null
+          created_at?: string | null
+          is_default?: boolean | null
+          payment_method_id?: string
+          stripe_payment_method_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payment_methods_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
       users: {
         Row: {
           account_status: string | null
@@ -1000,6 +1044,7 @@ export type Database = {
         Args: {
           p_amount_wc: number
           p_description?: string
+          p_payment_reference?: string
           p_related_entity_id?: string
           p_related_entity_type?: string
           p_transaction_type: string

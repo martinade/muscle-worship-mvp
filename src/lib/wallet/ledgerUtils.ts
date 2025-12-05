@@ -26,7 +26,7 @@ export async function logTransaction(params: LogTransactionParams): Promise<stri
     p_description: description || null,
     p_related_entity_type: related_entity_type || null,
     p_related_entity_id: related_entity_id || null,
-  });
+  }) as { data: { transaction_id: string } | null; error: any };
 
   if (error) {
     throw new Error(`Failed to process transaction: ${error.message}`);
@@ -35,7 +35,7 @@ export async function logTransaction(params: LogTransactionParams): Promise<stri
   return data.transaction_id;
 }
 
-export async function creditWallet(userId: string, amount: number, description?: string): Promise<void> {
+export async function creditWallet(userId: string, amount: number, description?: string, relatedEntityId?: string): Promise<void> {
   if (amount <= 0) {
     throw new Error('Credit amount must be greater than 0');
   }

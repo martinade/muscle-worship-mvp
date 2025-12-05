@@ -84,8 +84,9 @@ export default async function handler(
     });
 
     // Set new accessToken cookie
+    const isProduction = process.env.NODE_ENV === 'production';
     res.setHeader('Set-Cookie', 
-      `accessToken=${newAccessToken}; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=${15 * 60}` // 15 minutes
+      `accessToken=${newAccessToken}; HttpOnly; ${isProduction ? 'Secure;' : ''} SameSite=Strict; Path=/; Max-Age=${15 * 60}` // 15 minutes
     );
 
     return res.status(200).json({

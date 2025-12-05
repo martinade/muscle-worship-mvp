@@ -28,7 +28,7 @@ export async function checkAndAlertLowBalance(userId: string): Promise<void> {
 
     // Get wallet details for balance and auto-topup settings
     const { data: wallet, error: walletError } = await supabase
-      .from('Wallets')
+      .from('wallets')
       .select('balance_wc, auto_topup_enabled, auto_topup_threshold_wc')
       .eq('user_id', userId)
       .single();

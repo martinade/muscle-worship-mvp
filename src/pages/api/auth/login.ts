@@ -54,7 +54,7 @@ function checkRateLimit(ip: string): { allowed: boolean; remainingTime?: number 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<SuccessResponse | ErrorResponse>
-) {
+): Promise<void> {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
@@ -126,9 +126,10 @@ export default async function handler(
     });
 
     // Set HTTP-only cookies
+    const isProduction = process.env.NODE_ENV === 'production';
     res.setHeader('Set-Cookie', [
-      `accessToken=${accessToken}; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=${15 * 60}`, // 15 minutes
-      `refreshToken=${refreshToken}; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=${7 * 24 * 60 * 60}`, // 7 days
+      `accessToken=${accessToken}; HttpOnly; ${isProduction ? 'Secure;' : ''} SameSite=Strict; Path=/; Max-Age=${15 * 60}`, // 15 minutes
+      `refreshToken=${refreshToken}; HttpOnly; ${isProduction ? 'Secure;' : ''} SameSite=Strict; Path=/; Max-Age=${7 * 24 * 60 * 60}`, // 7 days
     ]);
 
     // Prepare response

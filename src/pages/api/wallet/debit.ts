@@ -67,4 +67,4 @@ async function handler(
   }
 }
 
-export default requireAuth(handler);
+export default requireAuth()(handler);
