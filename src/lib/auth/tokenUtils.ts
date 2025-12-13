@@ -62,3 +62,21 @@ export function verifyToken(token: string, type: 'access' | 'refresh' = 'access'
     return null;
   }
 }
+
+/**
+ * Verify an access token
+ * @param token - JWT access token to verify
+ * @returns Decoded token payload with userId and role, or null if invalid
+ */
+export function verifyAccessToken(token: string): { userId: string; role?: string } | null {
+  return verifyToken(token, 'access');
+}
+
+/**
+ * Verify a refresh token
+ * @param token - JWT refresh token to verify
+ * @returns Decoded token payload with userId, or null if invalid
+ */
+export function verifyRefreshToken(token: string): { userId: string } | null {
+  return verifyToken(token, 'refresh');
+}

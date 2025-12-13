@@ -8,7 +8,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    const token = req.cookies.access_token;
+    let token: string | undefined;
+    const authHeader = req.headers.authorization;
+    
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      token = authHeader.split(' ')[1];
+    } else if (req.cookies.accessToken) {
+      token = req.cookies.accessToken;
+    }
+
     if (!token) {
       return res.status(401).json({ error: 'Unauthorized' });
     }

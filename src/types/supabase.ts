@@ -508,8 +508,12 @@ export type Database = {
           gender: string | null
           height_cm: number | null
           inperson_rate_per_hour_wc: number | null
+          ip_address_at_acceptance: string | null
+          kyc_submitted_at: string | null
           kyc_verified: boolean | null
           kyc_verified_at: string | null
+          legal_disclaimer_accepted: boolean | null
+          legal_disclaimer_accepted_at: string | null
           max_bench_kg: number | null
           max_deadlift_kg: number | null
           max_squat_kg: number | null
@@ -545,8 +549,12 @@ export type Database = {
           gender?: string | null
           height_cm?: number | null
           inperson_rate_per_hour_wc?: number | null
+          ip_address_at_acceptance?: string | null
+          kyc_submitted_at?: string | null
           kyc_verified?: boolean | null
           kyc_verified_at?: string | null
+          legal_disclaimer_accepted?: boolean | null
+          legal_disclaimer_accepted_at?: string | null
           max_bench_kg?: number | null
           max_deadlift_kg?: number | null
           max_squat_kg?: number | null
@@ -582,8 +590,12 @@ export type Database = {
           gender?: string | null
           height_cm?: number | null
           inperson_rate_per_hour_wc?: number | null
+          ip_address_at_acceptance?: string | null
+          kyc_submitted_at?: string | null
           kyc_verified?: boolean | null
           kyc_verified_at?: string | null
+          legal_disclaimer_accepted?: boolean | null
+          legal_disclaimer_accepted_at?: string | null
           max_bench_kg?: number | null
           max_deadlift_kg?: number | null
           max_squat_kg?: number | null
