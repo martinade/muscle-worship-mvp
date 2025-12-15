@@ -1,7 +1,7 @@
 # TODO
 
 ## Current Goal
-- (write the current Phase/Step here)
+- Phase 1 Step 2: DashboardLayout + WalletCard
 
 ## Plan
 - [ ] Task 1:
