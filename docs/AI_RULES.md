@@ -1,4 +1,3 @@
-exit
 RULES (Muscle Worship)
 
 These rules govern *all* AI-assisted work (Claude, Claude Code, etc.). If a request conflicts with these rules, stop and ask for clarification.
