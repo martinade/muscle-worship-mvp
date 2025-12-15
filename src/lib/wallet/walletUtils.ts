@@ -7,6 +7,21 @@ const supabase = createClient<Database>(
 );
 
 export async function createWallet(userId: string): Promise<string> {
+  // Idempotent: if wallet already exists (trigger/retry), return it.
+  const { data: existing, error: existingError } = await supabase
+    .from('wallets')
+    .select('wallet_id')
+    .eq('user_id', userId)
+    .maybeSingle() as { data: { wallet_id: string } | null; error: any };
+
+  if (existingError) {
+    throw new Error(`Failed to check wallet: ${existingError.message}`);
+  }
+
+  if (existing?.wallet_id) {
+    return existing.wallet_id;
+  }
+
   const { data, error } = await supabase
     .from('wallets')
     .insert({
