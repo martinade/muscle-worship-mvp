@@ -35,6 +35,23 @@ export async function createWallet(userId: string): Promise<string> {
     .single() as { data: { wallet_id: string } | null; error: any };
 
   if (error) {
+    // Handle race condition: another request created the wallet after our check
+    if (error.code === '23505') {
+      const { data: retry, error: retryError } = await supabase
+        .from('wallets')
+        .select('wallet_id')
+        .eq('user_id', userId)
+        .single() as { data: { wallet_id: string } | null; error: any };
+
+      if (retryError) {
+        throw new Error(`Failed to fetch existing wallet after conflict: ${retryError.message}`);
+      }
+
+      if (retry?.wallet_id) {
+        return retry.wallet_id;
+      }
+    }
+
     throw new Error(`Failed to create wallet: ${error.message}`);
   }
 
