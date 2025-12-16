@@ -31,7 +31,7 @@ export default async function handler(
     }
 
     const { data: user, error: userError } = await supabase
-      .from('Users')
+      .from('users')
       .select('role')
       .eq('user_id', decoded.userId)
       .single();

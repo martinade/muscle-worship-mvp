@@ -24,17 +24,17 @@ export async function triggerAutoTopUp(userId: string): Promise<void> {
     return;
   }
 
-  if (balance < wallet.auto_topup_threshold_wc) {
+  if (balance < (wallet.auto_topup_threshold_wc ?? 50)) {
     // V1.0: Log alert (Module 17 will send email notification)
-    console.log(`🔔 Auto-top-up triggered for user ${userId}. Balance: ${balance} WC, Threshold: ${wallet.auto_topup_threshold_wc} WC`);
-    console.log(`   Recommended top-up amount: ${wallet.auto_topup_amount_wc} WC`);
+    console.log(`🔔 Auto-top-up triggered for user ${userId}. Balance: ${balance} WC, Threshold: ${(wallet.auto_topup_threshold_wc ?? 50)} WC`);
+    console.log(`   Recommended top-up amount: ${(wallet.auto_topup_amount_wc ?? 100)} WC`);
     
     // V1.1: Automatically charge saved payment method
     // const paymentMethod = await getDefaultPaymentMethod(userId);
     // if (!paymentMethod) {
     //   throw new Error('No payment method saved');
     // }
-    // await chargePaymentMethod(paymentMethod, wallet.auto_topup_amount_wc);
+    // await chargePaymentMethod(paymentMethod, (wallet.auto_topup_amount_wc ?? 100));
   }
 }
 
@@ -62,9 +62,9 @@ export async function checkAutoTopUpEligibility(userId: string): Promise<{
   }
 
   return {
-    eligible: balance < wallet.auto_topup_threshold_wc,
+    eligible: balance < (wallet.auto_topup_threshold_wc ?? 50),
     currentBalance: balance,
-    threshold: wallet.auto_topup_threshold_wc,
-    topUpAmount: wallet.auto_topup_amount_wc,
+    threshold: (wallet.auto_topup_threshold_wc ?? 50),
+    topUpAmount: (wallet.auto_topup_amount_wc ?? 100),
   };
 }

@@ -17,7 +17,7 @@ interface Transaction {
   description: string | null;
   related_entity_type: string | null;
   related_entity_id: string | null;
-  created_at: string;
+  created_at: string | null;
 }
 
 interface HistoryResponse {
@@ -38,10 +38,14 @@ async function handler(
   }
 
   try {
+    if (!req.user) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
     const userId = req.user.userId;
 
     const { data, error } = await supabase
-      .from('CoinTransactions')
+      .from('cointransactions')
       .select('*')
       .eq('user_id', userId)
       .order('created_at', { ascending: false })

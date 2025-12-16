@@ -55,6 +55,10 @@ export async function createWallet(userId: string): Promise<string> {
     throw new Error(`Failed to create wallet: ${error.message}`);
   }
 
+  if (!data?.wallet_id) {
+    throw new Error("No wallet_id returned after wallet creation");
+  }
+
   return data.wallet_id;
 }
 
@@ -107,14 +111,14 @@ export async function creditWallet(userId: string, amountWc: number, description
     throw new Error('Credit amount must be greater than 0');
   }
   
-  const { data, error } = await supabase.rpc('process_wallet_transaction', {
+  const { data, error } = await (supabase as any).rpc('process_wallet_transaction', {
     p_user_id: userId,
     p_transaction_type: 'credit',
     p_amount_wc: amountWc,
     p_description: description,
-    p_related_entity_type: paymentReference ? 'stripe_session' : null,
-    p_related_entity_id: null,
-    p_payment_reference: paymentReference || null,
+    p_related_entity_type: paymentReference ? 'stripe_session' : undefined,
+    p_related_entity_id: undefined,
+    p_payment_reference: paymentReference || undefined,
   }) as { data: { new_balance: number } | null; error: any };
 
   if (error) {
@@ -133,7 +137,12 @@ export async function creditWallet(userId: string, amountWc: number, description
   console.log('✅ Wallet credited successfully');
   console.log('   New balance:', data.new_balance, 'WC');
   
-  return data.new_balance;
+  const newBalance = data?.new_balance;
+  if (typeof newBalance !== "number") {
+    throw new Error("No data returned from process_wallet_transaction");
+  }
+
+  return newBalance;
 }
 
 export async function debitWallet(userId: string, amountWc: number, description: string): Promise<number> {
@@ -143,20 +152,24 @@ export async function debitWallet(userId: string, amountWc: number, description:
     throw new Error('Insufficient balance');
   }
 
-  const { data, error } = await supabase.rpc('process_wallet_transaction', {
+  const { data, error } = await (supabase as any).rpc('process_wallet_transaction', {
     p_user_id: userId,
     p_transaction_type: 'debit',
     p_amount_wc: -amountWc,
     p_description: description,
-    p_related_entity_type: null,
-    p_related_entity_id: null,
+    p_related_entity_type: undefined,
+    p_related_entity_id: undefined,
   });
 
   if (error) {
     throw new Error(`Failed to debit wallet: ${error.message}`);
   }
 
-  return data.new_balance;
+  const newBalance = data?.new_balance;
+  if (typeof newBalance !== "number") {
+    throw new Error("No data returned from process_wallet_transaction");
+  }
+  return newBalance;
 }
 
 export interface AutoTopupConfig {
@@ -177,9 +190,9 @@ export async function getAutoTopupConfig(userId: string): Promise<AutoTopupConfi
   }
 
   return {
-    auto_topup_enabled: data.auto_topup_enabled,
-    auto_topup_threshold_wc: data.auto_topup_threshold_wc,
-    auto_topup_amount_wc: data.auto_topup_amount_wc,
+    auto_topup_enabled: data.auto_topup_enabled ?? false,
+    auto_topup_threshold_wc: data.auto_topup_threshold_wc ?? 0,
+    auto_topup_amount_wc: data.auto_topup_amount_wc ?? 0,
   };
 }
 
@@ -200,8 +213,8 @@ export async function updateAutoTopupConfig(userId: string, config: AutoTopupCon
   }
 
   return {
-    auto_topup_enabled: data.auto_topup_enabled,
-    auto_topup_threshold_wc: data.auto_topup_threshold_wc,
-    auto_topup_amount_wc: data.auto_topup_amount_wc,
+    auto_topup_enabled: data.auto_topup_enabled ?? false,
+    auto_topup_threshold_wc: data.auto_topup_threshold_wc ?? 50,
+    auto_topup_amount_wc: data.auto_topup_amount_wc ?? 100,
   };
 }

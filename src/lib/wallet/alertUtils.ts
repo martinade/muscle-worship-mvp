@@ -17,7 +17,7 @@ export async function checkAndAlertLowBalance(userId: string): Promise<void> {
 
     // Get user's email from Users table
     const { data: user, error: userError } = await supabase
-      .from('Users')
+      .from('users')
       .select('email')
       .eq('user_id', userId)
       .single();

@@ -23,13 +23,17 @@ export async function logTransaction(params: LogTransactionParams): Promise<stri
     p_user_id: user_id,
     p_transaction_type: transaction_type,
     p_amount_wc: amount_wc,
-    p_description: description || null,
-    p_related_entity_type: related_entity_type || null,
-    p_related_entity_id: related_entity_id || null,
+    p_description: description || undefined,
+    p_related_entity_type: related_entity_type || undefined,
+    p_related_entity_id: related_entity_id || undefined,
   }) as { data: { transaction_id: string } | null; error: any };
 
   if (error) {
     throw new Error(`Failed to process transaction: ${error.message}`);
+  }
+
+  if (!data?.transaction_id) {
+    throw new Error("No transaction_id returned from process_wallet_transaction");
   }
 
   return data.transaction_id;

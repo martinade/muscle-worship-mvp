@@ -32,7 +32,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(400).json({ error: 'Missing required fields: user_id, amount_wc, booking_id' });
     }
 
-    if (decoded.user_id !== user_id) {
+    if (decoded.userId !== user_id) {
       return res.status(403).json({ error: 'Forbidden: Cannot lock escrow for another user' });
     }
 

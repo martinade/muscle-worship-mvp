@@ -22,7 +22,10 @@ async function handler(
   req: AuthenticatedRequest,
   res: NextApiResponse<BalanceResponse | ErrorResponse>
 ) {
-  const userId = req.user.userId;
+  const userId = req.user?.userId;
+  if (!userId) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
   const { include_autotopup, update_autotopup } = req.query;
 
   // Handle auto-topup config update via POST
