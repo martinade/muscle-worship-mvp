@@ -1,0 +1,24 @@
+:root {
+  /* Surfaces */
+  --bg-app: #0b0c0f;
+  --bg-panel: #11141a;
+  --bg-card: #171b22;
+  --bg-elevated: #1e2430;
+
+  /* Text */
+  --text-primary: #f2f5f7;
+  --text-secondary: #c7cdd3;
+  --text-muted: #8b949e;
+  --text-danger: #d20a1e;
+
+  /* Borders */
+  --border-default: #2a2f3a;
+  --border-focus: #3a4252;
+  --border-active: #d20a1e;
+
+  /* Accents */
+  --accent-primary: #d20a1e;
+  --accent-info: #2e4c6d;
+  --accent-warn: #c79200;
+  --accent-success: #2e7d32;
+}
