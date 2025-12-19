@@ -3,16 +3,10 @@ import Head from "next/head";
 import { verifyToken } from "@/lib/auth/tokenUtils";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { WalletCard } from "@/components/wallet/WalletCard";
-import { createClient } from "@supabase/supabase-js";
 
 interface CreatorDashboardProps {
   userName: string;
 }
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_KEY!,
-);
 
 const CreatorDashboard: NextPage<CreatorDashboardProps> = ({ userName }) => {
   return (
@@ -20,13 +14,22 @@ const CreatorDashboard: NextPage<CreatorDashboardProps> = ({ userName }) => {
       <Head>
         <title>Creator Dashboard - Muscle Worship Platform</title>
       </Head>
-      <DashboardLayout role="creator" userName={userName}>
-        <h1 className="text-2xl font-bold text-gray-900 mb-6">
-          Creator Dashboard
-        </h1>
-        <div className="max-w-sm">
-          <WalletCard />
-        </div>
+      <DashboardLayout
+        role="creator"
+        userName={userName}
+        pageTitle="Creator Dashboard"
+        headerCenter={
+          <div className="mw-card w-full px-6 py-4 text-sm text-[var(--text-secondary)]">
+            Creator data will appear here.
+          </div>
+        }
+        headerRight={
+          <div className="w-full md:w-[240px]">
+            <WalletCard />
+          </div>
+        }
+      >
+        <div className="mw-card p-6 text-[var(--text-secondary)]">Main content area.</div>
       </DashboardLayout>
     </>
   );
@@ -79,6 +82,11 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   // Fetch username from database
   let userName = "Creator";
   try {
+    const { createClient } = await import("@supabase/supabase-js");
+    const supabase = createClient(
+      process.env.SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_KEY!,
+    );
     const { data: user } = await supabase
       .from("users")
       .select("username")

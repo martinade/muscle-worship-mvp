@@ -1,6 +1,18 @@
+@import "./tokens.css";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* ========== DESIGN CONTRACT / AI RULES ========== */
+/* 
+  1. Never use raw hex in components (only semantic tokens or MW utility classes)
+  2. Primary CTA must use .mw-btn-primary
+  3. All cards must use .mw-card
+  4. Active nav must use .mw-nav-active
+  5. Page H1 must use .mw-gradient-text
+*/
+
+/* MW utilities live in tokens.css. Do not redefine them here. */
 
 @layer base {
   :root {
@@ -64,6 +76,7 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    background: var(--bg-app);
+    color: var(--text-primary);
   }
 }

@@ -1,24 +1,180 @@
 :root {
   /* Surfaces */
-  --bg-app: #0b0c0f;
-  --bg-panel: #11141a;
-  --bg-card: #171b22;
-  --bg-elevated: #1e2430;
+  --bg-app: #030304;
+  --bg-panel: #050506;
+  --bg-card: #101018;
+  --bg-elevated: #14141f;
 
   /* Text */
-  --text-primary: #f2f5f7;
-  --text-secondary: #c7cdd3;
-  --text-muted: #8b949e;
-  --text-danger: #d20a1e;
+  --text-primary: #f2f2f5;
+  --text-secondary: #b6b7c2;
+  --text-muted: #7b7d8b;
+  --text-danger: #b31232;
+  --text-highlight: #d8d9e2;
 
   /* Borders */
-  --border-default: #2a2f3a;
-  --border-focus: #3a4252;
-  --border-active: #d20a1e;
+  --border-default: rgba(255,255,255,0.10);
+  --border-focus: rgba(255,255,255,0.18);
+  --border-active: rgba(179,18,50,0.55);
 
   /* Accents */
-  --accent-primary: #d20a1e;
-  --accent-info: #2e4c6d;
-  --accent-warn: #c79200;
-  --accent-success: #2e7d32;
+  --accent-primary: #b31228;      /* darker red */
+  --accent-primary-deep: #7a0c22; /* for gradients/glow depth */
+  --accent-primary-soft: rgba(179, 18, 40, 0.16);
+  --accent-primary-faint: rgba(179, 18, 40, 0.08);
+
+  /* Thin red line (borders) */
+  --border-accent: rgba(179, 18, 40, 0.70);
+
+  /* Depth */
+  --shadow-soft: 0 8px 22px rgba(0,0,0,0.50);
+  --shadow-card: 0 10px 24px rgba(0,0,0,0.56);
+  --shadow-elev: 0 14px 34px rgba(0,0,0,0.62);
+  --shadow-outline: 0 0 0 1px rgba(255, 255, 255, 0.08);
+
+  /* Gradient (text only) — more red, narrower light band */
+  --mw-gradient: linear-gradient(
+    90deg,
+    #b31232 0%,
+    #c01536 36%,
+    #f3f5fb 49.25%,
+    #e9edf6 50%,
+    #f1f3f9 50.75%,
+    #c01536 64%,
+    #b31232 100%
+  );
+}
+
+/* ========== MUSCLE WORSHIP UTILITIES ========== */
+.mw-bg {
+  background:
+    radial-gradient(600px circle at 12% 12%, rgba(179,18,50,0.006), transparent 62%),
+    radial-gradient(520px circle at 88% 18%, rgba(179,18,50,0.004), transparent 66%),
+    var(--bg-app);
+}
+
+.mw-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-default);
+  border-radius: 16px;
+  box-shadow: var(--shadow-card), var(--shadow-outline);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Thin red top accent line on cards (non-negotiable) */
+.mw-card::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 1px;
+  background: var(--accent-primary);
+  opacity: 0.85;
+}
+
+.mw-card:hover {
+  border-color: rgba(179,18,50,0.22);
+}
+
+.mw-card--accent {
+  border-color: var(--border-accent);
+}
+
+/* Small MW card/chip (for header badges/buttons). Rectangular, not pill. */
+.mw-chip {
+  background: var(--bg-card);
+  border: 1px solid var(--border-default);
+  border-radius: 12px;
+  box-shadow: var(--shadow-card), var(--shadow-outline);
+  position: relative;
+  overflow: hidden;
+}
+.mw-chip::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 1px;
+  background: var(--accent-primary);
+  opacity: 0.85;
+}
+
+/* Standard header control sizing (badge/logout) */
+.mw-chip-lg {
+  padding: 0.3rem 1.25rem; /* ~40% less vertical padding */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mw-accent-rule {
+  height: 1.5px;
+  background: var(--accent-primary);
+  opacity: 0.9;
+  border-radius: 999px;
+}
+
+.mw-gradient-text {
+  background: var(--mw-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  background-size: 220% 100%;
+  animation: mwGradientShift 7.5s ease-in-out infinite;
+}
+
+@keyframes mwGradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50%      { background-position: 100% 50%; }
+}
+
+/* ====== MUSCLE WORSHIP UI UTILITIES (V1 accents) ====== */
+
+/* Thin card outline like your reference */
+.mw-card-outline {
+  border: 1px solid var(--border-default);
+  box-shadow: var(--shadow-card), var(--shadow-outline);
+}
+.mw-card-outline:hover {
+  border-color: var(--border-accent);
+  box-shadow: var(--shadow-card), var(--shadow-outline);
+}
+
+/* 1px top accent line (finer than your current 2px rule) */
+.mw-accent-topline {
+  height: 1px;
+  background: var(--accent-primary);
+  opacity: 0.85;
+  border-radius: 999px;
+}
+
+/* Primary CTA (disciplined red, not neon) */
+.mw-btn-primary {
+  background: var(--accent-primary);
+  color: var(--text-primary);
+  border: 1px solid rgba(255,255,255,0.10);
+  box-shadow: var(--shadow-soft);
+}
+.mw-btn-primary:hover {
+  background: var(--accent-primary-deep);
+}
+
+/* Subtle "red-on-dark" secondary button */
+.mw-btn-ghost {
+  background: transparent;
+  color: var(--text-primary);
+  border: 1px solid var(--border-default);
+}
+.mw-btn-ghost:hover {
+  border-color: var(--border-accent);
+  background: var(--accent-primary-faint);
+}
+
+/* Active nav style (thin left rail + faint red wash) */
+.mw-nav-active {
+  border-left: 1px solid var(--accent-primary);
+  background: var(--accent-primary-faint);
 }

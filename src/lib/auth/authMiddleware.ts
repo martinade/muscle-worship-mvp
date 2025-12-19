@@ -3,7 +3,7 @@ import { createClient } from '@supabase/supabase-js';
 import { verifyToken, generateAccessToken } from '@/lib/auth/tokenUtils';
 
 const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_KEY!
 );
 
