@@ -79,4 +79,18 @@
     background: var(--bg-app);
     color: var(--text-primary);
   }
+  
+  /* Fix autofill text color visibility */
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 1000px white inset !important;
+    -webkit-text-fill-color: #000 !important;
+  }
+  
+  /* Ensure all inputs have black text */
+  input {
+    color: #000 !important;
+  }
 }
