@@ -4,7 +4,7 @@ import { Database } from '@/types/supabase';
 import { verifyAccessToken } from '@/lib/auth/tokenUtils';
 
 const supabase = createClient<Database>(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_KEY!
 );
 
@@ -52,12 +52,20 @@ export default async function handler(
   }
 
   try {
+    // Auth: prefer httpOnly cookie accessToken; keep Bearer support for backwards compatibility.
     const authHeader = req.headers.authorization;
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return res.status(401).json({ error: 'Missing or invalid authorization header' });
+    const bearerToken =
+      typeof authHeader === 'string' && authHeader.startsWith('Bearer ')
+        ? authHeader.slice('Bearer '.length)
+        : null;
+
+    const cookieToken = req.cookies?.accessToken || null;
+    const token = bearerToken || cookieToken;
+
+    if (!token) {
+      return res.status(401).json({ error: 'Missing authentication token' });
     }
 
-    const token = authHeader.split(' ')[1];
     const decoded = verifyAccessToken(token);
 
     if (!decoded || !decoded.userId) {
@@ -78,13 +86,11 @@ export default async function handler(
       return res.status(403).json({ error: 'Only creators can accept legal disclaimer' });
     }
 
-    const { disclaimer_version } = req.body;
+    // Body: allow omission; default to "1.0" for Phase 1
+    const { disclaimer_version } = (req.body || {}) as { disclaimer_version?: string };
+    const disclaimerVersion = disclaimer_version || '1.0';
 
-    if (!disclaimer_version) {
-      return res.status(400).json({ error: 'disclaimer_version is required' });
-    }
-
-    const ipAddress = 
+    const ipAddress =
       (req.headers['x-forwarded-for'] as string)?.split(',')[0] ||
       (req.headers['x-real-ip'] as string) ||
       req.socket.remoteAddress ||
@@ -102,13 +108,15 @@ export default async function handler(
       .eq('user_id', decoded.userId);
 
     if (updateError) {
-      return res.status(500).json({ error: `Failed to update disclaimer acceptance: ${updateError.message}` });
+      return res
+        .status(500)
+        .json({ error: `Failed to update disclaimer acceptance: ${updateError.message}` });
     }
 
     return res.status(200).json({
       success: true,
       accepted_at: acceptedAt,
-      disclaimer_version,
+      disclaimer_version: disclaimerVersion,
       ip_address: ipAddress,
     });
   } catch (error: any) {
