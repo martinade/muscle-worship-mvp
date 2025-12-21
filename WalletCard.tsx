@@ -1,5 +1,3 @@
-"use client";
-
 import React, { useEffect, useState } from "react";
 
 interface Transaction {
@@ -19,23 +17,20 @@ export function WalletCard() {
   useEffect(() => {
     const fetchWalletData = async () => {
       try {
-        const [balanceRes, historyRes] = await Promise.all([
-          fetch("/api/wallet/balance"),
-          fetch("/api/wallet/history"),
-        ]);
-
+        // Fetch balance
+        const balanceRes = await fetch("/api/wallet/balance");
         if (balanceRes.ok) {
           const balanceData = await balanceRes.json();
           setBalance(balanceData.balance_wc ?? 0);
-        } else {
-          setBalance(0);
         }
 
+        // Fetch recent transactions
+        const historyRes = await fetch("/api/wallet/history");
         if (historyRes.ok) {
           const historyData = await historyRes.json();
           setTransactions((historyData.transactions || []).slice(0, 3));
         }
-      } catch {
+      } catch (err) {
         setError("Failed to load wallet");
       } finally {
         setLoading(false);
@@ -45,11 +40,15 @@ export function WalletCard() {
     fetchWalletData();
   }, []);
 
-  const isCredit = (type: string) => type === "credit" || type === "refund";
-
   const formatAmount = (amount: number, type: string) => {
-    const sign = isCredit(type) ? "+" : "-";
-    return `${sign}${Math.abs(amount).toLocaleString()} WC`;
+    const isCredit = type === "credit" || type === "refund";
+    return `${isCredit ? "+" : "-"}${Math.abs(amount).toLocaleString()} WC`;
+  };
+
+  const formatDate = (dateStr: string | null) => {
+    if (!dateStr) return "";
+    const date = new Date(dateStr);
+    return date.toLocaleDateString(undefined, { month: "short", day: "numeric" });
   };
 
   return (
@@ -76,13 +75,13 @@ export function WalletCard() {
                 key={tx.transaction_id}
                 className="flex items-center justify-between text-xs"
               >
-                <span className="text-[var(--text-secondary)] truncate max-w-[140px]">
+                <span className="text-[var(--text-secondary)] truncate max-w-[120px]">
                   {tx.description || tx.transaction_type}
                 </span>
                 <span
                   className={
-                    isCredit(tx.transaction_type)
-                      ? "text-[var(--text-highlight)]"
+                    tx.transaction_type === "credit" || tx.transaction_type === "refund"
+                      ? "text-green-400"
                       : "text-[var(--text-muted)]"
                   }
                 >
