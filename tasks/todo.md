@@ -1,7 +1,12 @@
 # Tasks - Muscle Worship Platform
 
 ## Current Goal
-Phase 1 Step 2: Shared Dashboard Layout + WalletCard component (minimal)
+Phase 1 Step 6: TBD (paste Step 6 plan here)
+
+
+## Status
+- ✅ Phase 1 Steps 2–5 shipped (dashboard UI, onboarding Step 1, admin KYC queue, wallet balance/history)
+- ⏭️ Next: Phase 1 Step 6 (paste the exact checklist/plan from Claude)
 
 ## Plan
 

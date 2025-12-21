@@ -4,7 +4,7 @@ import { Database } from '@/types/supabase';
 import { verifyAccessToken } from '@/lib/auth/tokenUtils';
 
 const supabase = createClient<Database>(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_KEY!
 );
 
