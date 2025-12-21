@@ -3,6 +3,7 @@ import Head from "next/head";
 import { verifyToken } from "@/lib/auth/tokenUtils";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { WalletCard } from "@/components/wallet/WalletCard";
+import { createClient } from "@supabase/supabase-js";
 
 interface CreatorDashboardProps {
   userName: string;
@@ -79,29 +80,41 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     };
   }
 
-  // Fetch username from database
-  let userName = "Creator";
-  try {
-    const { createClient } = await import("@supabase/supabase-js");
-    const supabase = createClient(
-      process.env.SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_KEY!,
-    );
-    const { data: user } = await supabase
-      .from("users")
-      .select("username")
-      .eq("user_id", decoded.userId)
-      .single();
-    if (user?.username) {
-      userName = user.username;
-    }
-  } catch (error) {
-    // Use default if fetch fails
+  // Fetch creator profile to check onboarding status
+  const supabase = createClient(
+    process.env.SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_KEY!
+  );
+
+  const { data: profile } = await supabase
+    .from("creatorprofiles")
+    .select("legal_disclaimer_accepted, kyc_verified, kyc_submitted_at")
+    .eq("user_id", decoded.userId)
+    .single();
+
+  // Redirect to onboarding if not started or incomplete
+  // Only allow dashboard access if KYC is submitted (awaiting or approved)
+  const onboardingComplete = profile?.kyc_submitted_at || profile?.kyc_verified;
+  
+  if (!onboardingComplete) {
+    return {
+      redirect: {
+        destination: "/creator/onboarding",
+        permanent: false,
+      },
+    };
   }
+
+  // Fetch username
+  const { data: user } = await supabase
+    .from("users")
+    .select("username")
+    .eq("user_id", decoded.userId)
+    .single();
 
   return {
     props: {
-      userName,
+      userName: user?.username || "Creator",
     },
   };
 };
